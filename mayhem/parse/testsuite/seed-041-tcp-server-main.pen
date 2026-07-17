@@ -1,0 +1,35 @@
+import Console'Print
+import Os'Context { Context }
+import Os'Environment
+import Os'File
+import Os'Process
+import Os'Tcp
+import Os'Tcp'AcceptedStream
+import Os'Tcp'Listener { Listener }
+import Os'Tcp'Stream { Stream }
+
+import 'arguments
+
+main = \(ctx context) none {
+  if e = run(ctx.Os) as none {
+    none
+  } else {
+    _ = Print'Line(ctx.Os, if s = source(e) as string { s } else { "unknown error" })
+    Process'Exit(ctx.Os, 1)
+  }
+}
+
+run = \(ctx Context) none | error {
+  args = arguments'Parse(Environment'Arguments(ctx))?
+
+  serve(ctx, Tcp'Bind(ctx, args.Host)?)
+}
+
+serve = \(ctx Context, l Listener) none | error {
+  s = Tcp'Accept(ctx, l)?
+  d = Tcp'Receive(ctx, s.Stream, 1024)?
+  Print'Line(ctx, d)?
+  Tcp'Send(ctx, s.Stream, d)?
+
+  serve(ctx, l)
+}

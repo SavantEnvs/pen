@@ -1,0 +1,97 @@
+import Reflect'Any
+import Test'Assert
+
+type foo {}
+
+type bar {
+  x number
+}
+
+type baz {
+  x number
+  y string
+}
+
+DebugBoolean = \() none | error {
+  Assert'Equal(Any'Debug(false), "false")?
+  Assert'Equal(Any'Debug(true), "true")
+}
+
+DebugList = \() none | error {
+  Assert'Equal(Any'Debug([none]), "[none]")?
+  Assert'Equal(Any'Debug([number 1, 2, 3]), "[number 1, 2, 3]")
+}
+
+DebugMap = \() none | error {
+  Assert'Equal(Any'Debug({none: none}), "{none: none}")?
+  Assert'Equal(
+    Any'Debug({string: number "foo": 1, "bar": 2}),
+    "{string: number \"bar\": 2, \"foo\": 1}",
+  )
+}
+
+DebugNone = \() none | error {
+  Assert'Equal(Any'Debug(none), "none")
+}
+
+DebugNumber = \() none | error {
+  Assert'Equal(Any'Debug(42), "42")
+}
+
+DebugRecord = \() none | error {
+  Assert'Equal(Any'Debug(foo{}), "foo{}")
+}
+
+DebugRecordWithField = \() none | error {
+  Assert'Equal(Any'Debug(bar{x: 42}), "bar{x: 42}")
+}
+
+DebugRecordWithFields = \() none | error {
+  Assert'Equal(Any'Debug(baz{x: 42, y: "foo"}), "baz{x: 42, y: \"foo\"}")
+}
+
+DebugString = \() none | error {
+  Assert'Equal(Any'Debug("foo"), "\"foo\"")
+}
+
+EqualDifferentTypes = \() none | error {
+  Assert'Equal(Any'Equal(none, 1), false)
+}
+
+EqualFunction = \() none | error {
+  Assert'Equal(Any'Equal(\() none { none }, none), false)?
+  Assert'Equal(Any'Equal(\() none { none }, \() none { none }), none)
+}
+
+EqualList = \() none | error {
+  Assert'Equal(Any'Equal([none], [none]), true)?
+  Assert'Equal(Any'Equal([none none], [none]), false)
+}
+
+EqualMap = \() none | error {
+  Assert'Equal(Any'Equal({none: none}, {none: none}), true)?
+  Assert'Equal(Any'Equal({none: none none: none}, {none: none}), false)
+}
+
+EqualNone = \() none | error {
+  Assert'Equal(Any'Equal(none, none), true)
+}
+
+EqualNumber = \() none | error {
+  Assert'Equal(Any'Equal(0, 0), true)?
+  Assert'Equal(Any'Equal(0, 1), false)
+}
+
+EqualString = \() none | error {
+  Assert'Equal(Any'Equal("foo", "foo"), true)?
+  Assert'Equal(Any'Equal("foo", "bar"), false)
+}
+
+EqualRecord = \() none | error {
+  Assert'Equal(Any'Equal(foo{}, foo{}), true)?
+  Assert'Equal(Any'Equal(bar{x: 0}, bar{x: 0}), true)?
+  Assert'Equal(Any'Equal(bar{x: 0}, bar{x: 1}), false)?
+  Assert'Equal(Any'Equal(baz{x: 0, y: "foo"}, baz{x: 0, y: "foo"}), true)?
+  Assert'Equal(Any'Equal(baz{x: 0, y: "foo"}, baz{x: 1, y: "foo"}), false)?
+  Assert'Equal(Any'Equal(baz{x: 0, y: "foo"}, baz{x: 0, y: "bar"}), false)?
+}

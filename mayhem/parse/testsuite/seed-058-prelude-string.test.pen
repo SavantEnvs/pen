@@ -1,0 +1,10 @@
+import Core'Number
+import Test'Assert
+
+CompareStrings = \() none | error {
+  Assert'Equal("foo", "foo")
+}
+
+CompareDifferentStrings = \() none | error {
+  Assert'True("foo" != "bar")
+}

@@ -1,0 +1,46 @@
+import Console'Print
+import Os'Context { Context }
+import Os'Environment
+import Os'File { File }
+import Os'Process
+
+bufferSize = \() number { 4096 }
+
+main = \(ctx context) none {
+  if e = run(ctx.Os) as none {
+    none
+  } else {
+    _ = Print'Line(ctx.Os, if s = source(e) as string { s } else { "unknown error" })
+    Process'Exit(ctx.Os, 1)
+  }
+}
+
+run = \(ctx Context) none | error {
+  fs = Environment'Arguments(ctx)
+
+  if [_, ..._] = fs {
+    concatenateFiles(ctx, fs)
+  } else {
+    pipeFile(ctx, File'StdIn())
+  }
+}
+
+concatenateFiles = \(ctx Context, fs [string]) none | error {
+  if [f, ...fs] = fs {
+    pipeFile(ctx, File'Open(ctx, f())?)?
+    concatenateFiles(ctx, fs)
+  } else {
+    none
+  }
+}
+
+pipeFile = \(ctx Context, f File) none | error {
+  s = File'ReadLimit(ctx, f, bufferSize())?
+
+  if s == "" {
+    none
+  } else {
+    File'Write(ctx, File'StdOut(), s)?
+    pipeFile(ctx, f)
+  }
+}

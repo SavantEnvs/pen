@@ -1,0 +1,17 @@
+import Os'Context { Context }
+import Os'File
+
+Line = \(ctx Context, s string) none | error {
+  File'Write(ctx, File'StdOut(), s + "\n")?
+
+  none
+}
+
+Lines = \(ctx Context, ss [string]) none | error {
+  if [s, ...ss] = ss {
+    Line(ctx, s())?
+    Lines(ctx, ss)?
+  } else {
+    none
+  }
+}

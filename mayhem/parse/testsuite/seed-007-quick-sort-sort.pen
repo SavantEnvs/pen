@@ -1,0 +1,13 @@
+Sort = \(ns [number]) [number] {
+  if [n, ...ns] = ns {
+    f = \(x number) boolean { x < n() }
+
+    [number
+      ...Sort([number n() for n in ns if f(n())]),
+      n(),
+      ...Sort([number n() for n in ns if !f(n())]),
+    ]
+  } else {
+    [number]
+  }
+}

@@ -1,0 +1,16 @@
+type Arguments {
+  Host string
+  Message string
+}
+
+Parse = \(ss [string]) Arguments | error {
+  if [s, ...ss] = ss {
+    if [m, ..._] = ss {
+      Arguments{Host: s(), Message: m()}
+    } else {
+      error("message not defined")
+    }
+  } else {
+    error("host not defined")
+  }
+}
